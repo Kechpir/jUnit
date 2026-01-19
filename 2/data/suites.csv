@@ -1,0 +1,57 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"### Цель теста:
+Проверить обработку входа для пользователя, который был заблокирован (locked_out_user).
+
+### Входные данные:
+- Логин: `locked_out_user`
+- Пароль: `secret_sauce`
+
+### Ожидаемый результат:
+1. Вход в систему запрещен.
+2. Отображается сообщение об ошибке: 'Sorry, this user has been locked out'.
+","922","Логин заблокированного пользователя","","Mon Jan 19 12:35:31 UTC 2026","passed","Mon Jan 19 12:35:32 UTC 2026","","com.saucedemo.tests.LoginTest","com.saucedemo.tests.LoginTest","testLockedOutUser"
+"### Цель теста:
+Проверить, что пользователь может успешно войти в систему с валидными данными.
+
+### Входные данные:
+- Логин: `standard_user`
+- Пароль: `secret_sauce`
+
+### Ожидаемый результат:
+1. Происходит переход на главную страницу (Inventory).
+2. Вверху страницы отображается заголовок ""Products"".
+","968","Успешный логин","","Mon Jan 19 12:35:30 UTC 2026","passed","Mon Jan 19 12:35:30 UTC 2026","","com.saucedemo.tests.LoginTest","com.saucedemo.tests.LoginTest","testSuccessfulLogin"
+"### Цель теста:
+Проверить валидацию полей при попытке входа без ввода логина и пароля.
+
+### Входные данные:
+- Логин: """" (пусто)
+- Пароль: """" (пусто)
+
+### Ожидаемый результат:
+1. Система требует заполнения полей.
+2. Отображается сообщение об ошибке: 'Epic sadface: Username is required'.
+","963","Логин с пустыми полями","","Mon Jan 19 12:35:29 UTC 2026","passed","Mon Jan 19 12:35:30 UTC 2026","","com.saucedemo.tests.LoginTest","com.saucedemo.tests.LoginTest","testEmptyFields"
+"### Цель теста:
+Проверить, что пользователь с проблемами производительности может войти в систему,
+несмотря на искусственную задержку загрузки страницы в 5 секунд.
+
+### Входные данные:
+- Логин: `performance_glitch_user`
+- Пароль: `secret_sauce`
+
+### Ожидаемый результат:
+1. Система успешно выполняет вход после паузы.
+2. Страница загружается полностью в пределах установленного таймаута (10 сек).
+","9287","Логин performance_glitch_user","","Mon Jan 19 12:35:19 UTC 2026","passed","Mon Jan 19 12:35:28 UTC 2026","","com.saucedemo.tests.LoginTest","com.saucedemo.tests.LoginTest","testPerformanceGlitchUser"
+"### Цель теста:
+Проверить, что при вводе неверного пароля система выдает соответствующую ошибку.
+
+### Входные данные:
+- Логин: `standard_user`
+- Пароль: `wrong_password`
+
+### Ожидаемый результат:
+1. Вход в систему не выполняется.
+2. Отображается сообщение об ошибке, содержащее фразу: 'Username and password do not match'.
+","936","Логин с неверным паролем","","Mon Jan 19 12:35:30 UTC 2026","passed","Mon Jan 19 12:35:31 UTC 2026","","com.saucedemo.tests.LoginTest","com.saucedemo.tests.LoginTest","testWrongPassword"
