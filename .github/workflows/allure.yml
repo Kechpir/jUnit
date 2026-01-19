@@ -8,6 +8,20 @@ on:
   pull_request:
     branches:
       - master
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: 'Выберите браузер для тестов'
+        required: true
+        default: 'chrome'
+        type: choice
+        options:
+          - chrome
+          - firefox
+      test_filter:
+        description: 'Какие тесты запустить? (например, LoginTest или *)'
+        required: true
+        default: '*'
 
 permissions:
   contents: write
@@ -27,7 +41,11 @@ jobs:
           cache: maven
 
       - name: Run tests
-        run: mvn clean test
+        run: |
+          # Если запуск ручной, берем инпуты. Если автоматический (push), используем дефолты.
+          BROWSER=${{ github.event.inputs.browser || 'chrome' }}
+          TEST_FILTER=${{ github.event.inputs.test_filter || '*' }}
+          mvn clean test -Dbrowser=$BROWSER -Dtest=$TEST_FILTER
         continue-on-error: true
 
       - name: Load Allure history
