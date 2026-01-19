@@ -46,18 +46,40 @@ permissions:
   contents: write
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      run_tests: ${{ steps.set-matrix.outputs.run_tests }}
+    steps:
+      - id: set-matrix
+        run: |
+          BROWSERS=()
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            BROWSERS+=("\"chrome\"")
+          else
+            [[ "${{ github.event.inputs.run_chrome }}" == "true" ]] && BROWSERS+=("\"chrome\"")
+            [[ "${{ github.event.inputs.run_firefox }}" == "true" ]] && BROWSERS+=("\"firefox\"")
+            [[ "${{ github.event.inputs.run_edge }}" == "true" ]] && BROWSERS+=("\"edge\"")
+          fi
+          
+          if [ ${#BROWSERS[@]} -eq 0 ]; then
+            echo "matrix={\"browser\":[]}" >> $GITHUB_OUTPUT
+            echo "run_tests=false" >> $GITHUB_OUTPUT
+          else
+            # Превращаем массив в строку типа ["chrome","firefox"]
+            JOINED_BROWSERS=$(IFS=,; echo "${BROWSERS[*]}")
+            echo "matrix={\"browser\":[$JOINED_BROWSERS]}" >> $GITHUB_OUTPUT
+            echo "run_tests=true" >> $GITHUB_OUTPUT
+          fi
+
   run-tests:
+    needs: setup
+    if: needs.setup.outputs.run_tests == 'true'
     strategy:
-      matrix:
-        browser: [chrome, firefox, edge]
+      matrix: ${{ fromJson(needs.setup.outputs.matrix) }}
       fail-fast: false
     runs-on: ubuntu-latest
-    if: |
-      github.event_name == 'push' || 
-      (matrix.browser == 'chrome' && github.event.inputs.run_chrome == 'true') ||
-      (matrix.browser == 'firefox' && github.event.inputs.run_firefox == 'true') ||
-      (matrix.browser == 'edge' && github.event.inputs.run_edge == 'true')
-    
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
